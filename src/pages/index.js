@@ -9,7 +9,9 @@ export default function Home() {
   const [tarea, setTarea] = useState({});
 
   const pedirTareas = async () => {
-    const response = await fetch("/api/tareas");
+    const response = await fetch("/api/tareas", {
+      method: "GET",
+    });
     const json = await response.json();
     setTareas(json);
   };
