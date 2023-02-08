@@ -1,11 +1,15 @@
 import React from "react";
 
 function Tarea({ tarea, setTarea, eliminarTarea }) {
-  const { nombre, dificultad, creacion, limite, descripcion, id } = tarea;
-  const handleEliminar = () => {
+  const { nombre, dificultad, limite, descripcion, id } = tarea;
+
+  const handleEliminar = async () => {
     const respuesta = confirm("Deseas eliminar esta tarea?");
 
     if (respuesta) {
+      const response = await fetch("/api/tareas?id=" + id, {
+        method: "DELETE",
+      });
       eliminarTarea(id);
     }
   };

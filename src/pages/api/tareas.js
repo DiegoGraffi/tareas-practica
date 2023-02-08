@@ -26,6 +26,12 @@ export default async function handler(req, res) {
       }
       break;
     }
+    case "DELETE": {
+      const id = req.query.id;
+      const { error } = await supabase.from("tareas").delete().eq("id", id);
+      res.status(200).json({ message: "Borrado exitosamente" });
+      break;
+    }
     default:
       res.status(200).json({ message: "metodo no soportado" });
   }
