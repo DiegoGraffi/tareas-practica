@@ -2,39 +2,20 @@ import { useState, useEffect } from "react";
 import Error from "./Error";
 import ListadoPacientes from "./ListadoPacientes";
 
-function Formulario({ tareas, setTareas, tarea, setTarea }) {
+function Formulario({ agregarTarea }) {
   const [nombre, setNombre] = useState("");
   const [dificultad, setDificultad] = useState("");
-  const [creacion, setCreacion] = useState("");
   const [limite, setLimite] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (Object.keys(tarea).length > 0) {
-      setNombre(tarea.nombre);
-      setDificultad(tarea.dificultad);
-      setCreacion(tarea.creacion);
-      setLimite(tarea.limite);
-      setDescripcion(tarea.descripcion);
-    }
-  }, [tarea]);
-
-  const generarId = () => {
-    const random = Math.random().toString(36).substr(2);
-    const fecha = Date.now().toString(36);
-
-    return random + fecha;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validacion del formulario
-    if ([nombre, dificultad, creacion, limite, descripcion].includes("")) {
+    if ([nombre, dificultad, limite, descripcion].includes("")) {
       console.log("Hay al menos un campo vacio");
-
       setError(true);
       return;
     }
@@ -45,31 +26,25 @@ function Formulario({ tareas, setTareas, tarea, setTarea }) {
     const objetoTarea = {
       nombre,
       dificultad,
-      creacion,
       limite,
       descripcion,
     };
 
-    if (tarea.id) {
-      // Editando el registro
-      objetoTarea.id = tarea.id;
+    // Enviar tarea al api
+    const response = await fetch("/api/tareas", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(objetoTarea),
+    });
 
-      const tareasActualizadas = tareas.map((tareaState) =>
-        tareaState.id === tarea.id ? objetoTarea : tareaState
-      );
-
-      setTareas(tareasActualizadas);
-      setTarea({});
-    } else {
-      // Nuevo registro
-      objetoTarea.id = generarId();
-      setTareas([...tareas, objetoTarea]);
-    }
+    const json = await response.json();
+    agregarTarea(json);
 
     // Reiniciar formulario
     setNombre("");
     setDificultad("");
-    setCreacion("");
     setLimite("");
     setDescripcion("");
   };
@@ -121,26 +96,11 @@ function Formulario({ tareas, setTareas, tarea, setTarea }) {
             value={dificultad}
             onChange={(e) => setDificultad(e.target.value)}
           >
+            <option value="">-- Seleccionar dificultad --</option>
             <option value="Baja">Baja</option>
             <option value="Media">Media</option>
             <option value="Alta">Alta</option>
           </select>
-        </div>
-
-        <div className="mb-5">
-          <label
-            htmlFor="creacion"
-            className="block text-gray-600 uppercase font-bold"
-          >
-            Fecha Creación
-          </label>
-          <input
-            id="creacion"
-            type="date"
-            className="w-full p-2 mt-2 rounded-md border-gray-600 border"
-            value={creacion}
-            onChange={(e) => setCreacion(e.target.value)}
-          />
         </div>
 
         <div className="mb-5">
@@ -176,7 +136,7 @@ function Formulario({ tareas, setTareas, tarea, setTarea }) {
         </div>
 
         <input
-          value={tarea.id ? "Editar Tarea" : "Agregar Tarea"}
+          value="Agregar Tarea"
           type="submit"
           className="bg-white w-full p-3 text-gray-600 uppercase font-bold cursor-pointer rounded-md border-gray-600 border hover:border-indigo-600 hover:border-t-8 transition-all ease-in-out duration-100 hover:text-indigo-600 "
         />

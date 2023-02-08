@@ -23,11 +23,6 @@ function Tarea({ tarea, setTarea, eliminarTarea }) {
       </p>
 
       <p className="font-bold mb-4 text-gray-600 uppercase">
-        Fecha Creación {""}
-        <span className="font-normal normal-case block">{creacion}</span>
-      </p>
-
-      <p className="font-bold mb-4 text-gray-600 uppercase">
         Fecha Límite {""}
         <span className="font-normal normal-case block">{limite}</span>
       </p>

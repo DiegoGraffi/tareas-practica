@@ -25,16 +25,15 @@ export default function Home() {
     setTareas(tareasActualizadas);
   };
 
+  const agregarTarea = (tarea) => {
+    setTareas([...tareas, tarea]);
+  };
+
   return (
     <div className="container mx-auto mt-20">
       <Header />
       <div className="mt-12 md:flex">
-        <Formulario
-          tareas={tareas}
-          setTareas={setTareas}
-          tarea={tarea}
-          setTarea={setTarea}
-        />
+        <Formulario agregarTarea={agregarTarea} />
         <ListadoPacientes
           tareas={tareas}
           setTarea={setTarea}
